@@ -1,20 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="hr">
 
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>PDnevnik</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
 </head>
 
+<style>
+    html {
+        color-scheme: dark;
+    }
+</style>
+
 <body>
-    <audio controls>
-        <source src="01-White-Noise-60min.mp3" type="audio/mpeg">
+    <h1>Radio Pervanov Dnevnik</h1>
+    <audio id="audioPlayer" controls>
         Your browser does not support the audio element.
     </audio>
+
+    <script>
+        const audioPlayer = document.getElementById("audioPlayer");
+        const media = [
+            "media/1.mp3",
+            "media/2.mp3",
+            "media/3.mp3",
+        ];
+        var currentPlayingIndex = 0;
+        var firstTry = true
+
+        function onInit() {
+            const randomIndex = Math.floor(Math.random() * media.length);
+            currentPlayingIndex = randomIndex
+            playMedia(media[currentPlayingIndex])
+        }
+
+        function playNext() {
+            currentPlayingIndex = (currentPlayingIndex + 1) % media.length;
+            playMedia(media[currentPlayingIndex])
+        }
+
+        function playMedia(media) {
+            audioPlayer.src = media
+            audioPlayer.load();
+        }
+
+        audioPlayer.addEventListener("ended", (event) => playNext());
+
+        audioPlayer.addEventListener("loadedmetadata", (event) => {
+            if (firstTry) {
+                firstTry = false
+                const duration = audioPlayer.duration;
+                const randomTime = Math.random() * duration;
+                audioPlayer.currentTime = randomTime;
+            }
+            audioPlayer.play()
+        });
+
+        window.onload = onInit();
+    </script>
 </body>
 
 </html>
